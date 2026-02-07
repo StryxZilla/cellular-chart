@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);
+      padding: 40px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 32px 40px;
+    }
+    .kicker {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ffd166;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 18px;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+    .chart-container {
+      padding: 30px 40px;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 0 40px 24px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+    .annotations {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      padding: 24px 40px;
+      background: #f8f9fa;
+      border-top: 1px solid #eee;
+    }
+    .anno {
+      text-align: center;
+      padding: 16px 8px;
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid;
+    }
+    .anno-gen { font-size: 20px; font-weight: 800; }
+    .anno-year { font-size: 11px; color: #666; margin: 4px 0; }
+    .anno-cap { font-size: 12px; font-weight: 500; }
+    .anno-speed { font-size: 10px; color: #888; margin-top: 4px; }
+    .footer {
+      padding: 20px 40px;
+      font-size: 11px;
+      color: #888;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="kicker">📱 Technology</div>
+      <h1>The Mobile Revolution</h1>
+      <div class="subtitle">How cellular speeds went from voice calls to virtual reality in 40 years</div>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#e6194b"></div>1G Era</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f58231"></div>2G Era</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffe119"></div>3G Era</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3cb44b"></div>4G LTE</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4363d8"></div>5G Era</div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="chart"></canvas>
+    </div>
+
+    <div class="annotations">
+      <div class="anno" style="border-color:#e6194b">
+        <div class="anno-gen" style="color:#e6194b">1G</div>
+        <div class="anno-year">1983</div>
+        <div class="anno-cap">Voice Only</div>
+        <div class="anno-speed">2.4 kbps</div>
+      </div>
+      <div class="anno" style="border-color:#f58231">
+        <div class="anno-gen" style="color:#f58231">2G</div>
+        <div class="anno-year">1991</div>
+        <div class="anno-cap">SMS & Basic Data</div>
+        <div class="anno-speed">14-64 kbps</div>
+      </div>
+      <div class="anno" style="border-color:#ffe119">
+        <div class="anno-gen" style="color:#b8860b">3G</div>
+        <div class="anno-year">2001</div>
+        <div class="anno-cap">Mobile Web & Apps</div>
+        <div class="anno-speed">0.4-2 Mbps</div>
+      </div>
+      <div class="anno" style="border-color:#3cb44b">
+        <div class="anno-gen" style="color:#3cb44b">4G</div>
+        <div class="anno-year">2009</div>
+        <div class="anno-cap">HD Streaming</div>
+        <div class="anno-speed">10-50 Mbps</div>
+      </div>
+      <div class="anno" style="border-color:#4363d8">
+        <div class="anno-gen" style="color:#4363d8">5G</div>
+        <div class="anno-year">2019</div>
+        <div class="anno-cap">IoT, AR/VR, AI</div>
+        <div class="anno-speed">100-1000 Mbps</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Data represents peak theoretical speeds. Actual speeds vary by carrier, location, and device. Sources: ITU, GSMA, IEEE.
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('chart').getContext('2d');
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(67, 99, 216, 0.4)');
+    gradient.addColorStop(0.5, 'rgba(60, 180, 75, 0.2)');
+    gradient.addColorStop(1, 'rgba(230, 25, 75, 0.05)');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['1983', '1991', '1998', '2001', '2006', '2009', '2012', '2019', '2023'],
+        datasets: [{
+          label: 'Peak Speed (Mbps)',
+          data: [0.0024, 0.014, 0.064, 0.384, 2, 10, 50, 100, 1000],
+          borderColor: function(context) {
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if (!chartArea) return '#4363d8';
+            const gradient = ctx.createLinearGradient(0, 0, chartArea.width, 0);
+            gradient.addColorStop(0, '#e6194b');
+            gradient.addColorStop(0.25, '#f58231');
+            gradient.addColorStop(0.4, '#ffe119');
+            gradient.addColorStop(0.6, '#3cb44b');
+            gradient.addColorStop(1, '#4363d8');
+            return gradient;
+          },
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 10,
+          pointHoverRadius: 14,
+          pointBackgroundColor: ['#e6194b', '#f58231', '#f58231', '#ffe119', '#ffe119', '#3cb44b', '#3cb44b', '#4363d8', '#4363d8'],
+          pointBorderColor: '#fff',
+          pointBorderWidth: 3,
+          borderWidth: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1a1a2e',
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 13 },
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              label: function(context) {
+                const val = context.raw;
+                if (val >= 1) return val + ' Mbps';
+                return (val * 1000).toFixed(1) + ' kbps';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            type: 'logarithmic',
+            min: 0.001,
+            max: 2000,
+            title: {
+              display: true,
+              text: 'DOWNLOAD SPEED (LOG SCALE)',
+              font: { size: 11, weight: '600' },
+              color: '#666'
+            },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: {
+              font: { size: 11 },
+              color: '#666',
+              callback: function(v) {
+                if (v >= 1) return v + ' Mbps';
+                if (v >= 0.001) return (v * 1000) + ' kbps';
+                return '';
+              }
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'YEAR',
+              font: { size: 11, weight: '600' },
+              color: '#666'
+            },
+            grid: { display: false },
+            ticks: { font: { size: 12, weight: '600' }, color: '#333' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
