@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mobile Network Speeds by Country | 2023-2024</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -72,7 +73,10 @@
       margin: 20px 0;
     }
     .chart-container-tall {
-      height: 500px;
+      height: 520px;
+    }
+    .chart-container-evo {
+      height: 480px;
     }
     .callout {
       background: linear-gradient(135deg, #fff7e6 0%, #fff3d6 100%);
@@ -113,34 +117,51 @@
       color: #666;
       margin-top: 4px;
     }
-    .timeline {
+    .legend-inline {
       display: flex;
-      justify-content: space-between;
-      margin: 32px 0;
-      padding: 0 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 16px 0 8px;
+      justify-content: center;
     }
-    .timeline-item {
-      text-align: center;
-      flex: 1;
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
     }
-    .timeline-dot {
-      width: 24px;
-      height: 24px;
+    .legend-dot {
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      margin: 0 auto 12px;
     }
-    .timeline-gen {
-      font-size: 18px;
+    .milestone-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .milestone {
+      background: #f8f9fa;
+      padding: 16px 12px;
+      border-radius: 8px;
+      text-align: center;
+      border-top: 4px solid;
+    }
+    .milestone-gen {
+      font-size: 20px;
       font-weight: 800;
     }
-    .timeline-year {
-      font-size: 12px;
-      color: #888;
-    }
-    .timeline-speed {
+    .milestone-first {
       font-size: 11px;
       color: #666;
       margin-top: 4px;
+    }
+    .milestone-country {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 2px;
     }
     .sources {
       background: #f8f9fa;
@@ -182,6 +203,7 @@
       .header, .section, .sources { padding-left: 24px; padding-right: 24px; }
       h1 { font-size: 28px; }
       .grid-2 { grid-template-columns: 1fr; }
+      .milestone-grid { grid-template-columns: repeat(3, 1fr); }
       .sources ul { columns: 1; }
     }
   </style>
@@ -190,68 +212,71 @@
   <div class="container">
     <div class="header">
       <div class="kicker">📱 Global Connectivity</div>
-      <h1>The 5G Speed Gap</h1>
-      <div class="subtitle">How mobile network performance varies wildly across the world — and which countries are leading the race</div>
-      <div class="byline">Data: Q3 2023 – Q4 2024 | Updated February 2026</div>
+      <h1>The Global Mobile Race</h1>
+      <div class="subtitle">How different countries led each generation of cellular technology — and where they stand today</div>
+      <div class="byline">Data: 1979–2024 | Sources: ITU, GSMA, Ookla, Wikipedia</div>
     </div>
 
     <div class="section">
-      <div class="section-title">5G Download Speeds by Country</div>
-      <div class="section-desc">Median 5G download speeds vary by more than 3x between leading and lagging nations. The UAE leads with nearly 600 Mbps, while the global median sits at just 203 Mbps.</div>
+      <div class="section-title">The Evolution: Country by Country</div>
+      <div class="section-desc">Japan pioneered 1G and 3G. Europe led 2G and 4G. South Korea was first to 5G. Each generation had different leaders.</div>
+      
+      <div class="legend-inline">
+        <div class="legend-item"><div class="legend-dot" style="background:#e6194b"></div>Japan</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4363d8"></div>South Korea</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3cb44b"></div>USA</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f58231"></div>Europe</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#911eb4"></div>China</div>
+      </div>
+
+      <div class="chart-container chart-container-evo">
+        <canvas id="evolutionChart"></canvas>
+      </div>
+
+      <div class="milestone-grid">
+        <div class="milestone" style="border-color:#e6194b">
+          <div class="milestone-gen" style="color:#e6194b">1G</div>
+          <div class="milestone-first">1979</div>
+          <div class="milestone-country">🇯🇵 Japan first</div>
+        </div>
+        <div class="milestone" style="border-color:#f58231">
+          <div class="milestone-gen" style="color:#f58231">2G</div>
+          <div class="milestone-first">1991</div>
+          <div class="milestone-country">🇫🇮 Finland first</div>
+        </div>
+        <div class="milestone" style="border-color:#ffe119">
+          <div class="milestone-gen" style="color:#b8860b">3G</div>
+          <div class="milestone-first">2001</div>
+          <div class="milestone-country">🇯🇵 Japan first</div>
+        </div>
+        <div class="milestone" style="border-color:#3cb44b">
+          <div class="milestone-gen" style="color:#3cb44b">4G</div>
+          <div class="milestone-first">2009</div>
+          <div class="milestone-country">🇸🇪 Sweden first</div>
+        </div>
+        <div class="milestone" style="border-color:#4363d8">
+          <div class="milestone-gen" style="color:#4363d8">5G</div>
+          <div class="milestone-first">2019</div>
+          <div class="milestone-country">🇰🇷 S. Korea first</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5G Download Speeds by Country (2023)</div>
+      <div class="section-desc">Median 5G download speeds vary by more than 3x between leading and lagging nations. The UAE leads with nearly 600 Mbps.</div>
       <div class="chart-container chart-container-tall">
         <canvas id="countryChart"></canvas>
       </div>
       <div class="callout">
         <div class="callout-stat">592 Mbps</div>
-        <div class="callout-text">UAE's median 5G speed — 2.9x faster than the global average</div>
+        <div class="callout-text">UAE's median 5G speed — 2.9x faster than the global average of 203 Mbps</div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">The Evolution: 1G to 5G</div>
-      <div class="section-desc">From analog voice calls to gigabit mobile broadband — 40 years of exponential improvement.</div>
-      
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#e6194b"></div>
-          <div class="timeline-gen" style="color:#e6194b">1G</div>
-          <div class="timeline-year">1983</div>
-          <div class="timeline-speed">2.4 kbps</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#f58231"></div>
-          <div class="timeline-gen" style="color:#f58231">2G</div>
-          <div class="timeline-year">1991</div>
-          <div class="timeline-speed">14-64 kbps</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#ffe119"></div>
-          <div class="timeline-gen" style="color:#b8860b">3G</div>
-          <div class="timeline-year">2001</div>
-          <div class="timeline-speed">0.4-2 Mbps</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#3cb44b"></div>
-          <div class="timeline-gen" style="color:#3cb44b">4G</div>
-          <div class="timeline-year">2009</div>
-          <div class="timeline-speed">10-50 Mbps</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background:#4363d8"></div>
-          <div class="timeline-gen" style="color:#4363d8">5G</div>
-          <div class="timeline-year">2019</div>
-          <div class="timeline-speed">100-1000 Mbps</div>
-        </div>
-      </div>
-
-      <div class="chart-container">
-        <canvas id="evolutionChart"></canvas>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">5G Adoption Race</div>
-      <div class="section-desc">Percentage of mobile connections using 5G technology by country (2024).</div>
+      <div class="section-title">5G Adoption by Region</div>
+      <div class="section-desc">Percentage of mobile connections using 5G technology (2024 estimates).</div>
       
       <div class="grid-2">
         <div class="stat-card">
@@ -270,8 +295,8 @@
     </div>
 
     <div class="section">
-      <div class="section-title">Regional Performance Gap</div>
-      <div class="section-desc">5G speed improvements year-over-year show which regions are investing in network infrastructure.</div>
+      <div class="section-title">Year-over-Year Speed Improvement</div>
+      <div class="section-desc">Which countries improved their 5G networks the most between 2022 and 2023?</div>
       <div class="chart-container">
         <canvas id="regionChart"></canvas>
       </div>
@@ -282,47 +307,239 @@
       <ul>
         <li><a href="https://www.ookla.com/articles/worldwide-connectivity-mobile-fixed-networks-digital-divide-2023" target="_blank">Ookla Speedtest Intelligence, Q3 2023</a></li>
         <li><a href="https://www.gsma.com/mobileeconomy/" target="_blank">GSMA Intelligence, Mobile Economy Report 2023</a></li>
-        <li><a href="https://www.statista.com/statistics/1168435/average-5g-download-speed-in-selected-countries/" target="_blank">Statista, 5G Download Speeds by Country 2023</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/1G" target="_blank">Wikipedia: 1G, 2G, 3G, 4G, 5G cellular standards</a></li>
         <li><a href="https://www.itu.int/en/ITU-D/Statistics/Pages/stat/default.aspx" target="_blank">ITU World Telecommunication Indicators</a></li>
+        <li><a href="https://www.statista.com/statistics/1168435/average-5g-download-speed-in-selected-countries/" target="_blank">Statista: 5G Download Speeds by Country 2023</a></li>
         <li><a href="https://gsacom.com/" target="_blank">Global mobile Suppliers Association (GSA)</a></li>
-        <li><a href="https://www.broadbandsearch.net/blog/mobile-broadband-statistics" target="_blank">BroadbandSearch, Mobile Broadband Statistics</a></li>
-        <li><a href="https://sqmagazine.co.uk/5g-statistics/" target="_blank">SQ Magazine, 5G Statistics 2025</a></li>
-        <li><a href="https://www.spglobal.com/marketintelligence/" target="_blank">S&P Global Market Intelligence</a></li>
+        <li><a href="https://www.cengn.ca/information-centre/innovation/timeline-from-1g-to-5g-a-brief-history-on-cell-phones/" target="_blank">CENGN: Timeline from 1G to 5G</a></li>
+        <li><a href="https://my.avnet.com/abacus/resources/article/the-evolution-of-cellular-networks/" target="_blank">Avnet: Evolution of Cellular Networks</a></li>
       </ul>
     </div>
 
     <div class="footer">
-      Methodology: Speeds represent median download speeds from Speedtest by Ookla. Actual speeds vary by location, time of day, device, and carrier. 
-      Peak theoretical speeds (e.g., 20 Gbps for 5G) are rarely achieved in real-world conditions.
+      Methodology: Evolution chart shows approximate year each country launched commercial service for each generation. 
+      Speeds represent median download speeds from Speedtest by Ookla. Actual speeds vary by location, carrier, and device.
     </div>
   </div>
 
   <script>
     // Color palette
     const colors = {
-      red: '#e6194b',
-      orange: '#f58231', 
-      yellow: '#ffe119',
-      green: '#3cb44b',
-      blue: '#4363d8',
-      purple: '#911eb4',
-      cyan: '#42d4f4',
-      magenta: '#f032e6'
+      japan: '#e6194b',
+      korea: '#4363d8',
+      usa: '#3cb44b',
+      europe: '#f58231',
+      china: '#911eb4',
+      uae: '#42d4f4'
     };
 
-    // Chart 1: 5G Speeds by Country (Horizontal Bar)
+    // Evolution data: [year, speed in Mbps] for each generation per country
+    // Speeds are approximate peak commercial speeds at launch
+    const evolutionData = {
+      japan: [
+        { x: 1979, y: 0.0024, gen: '1G' },
+        { x: 1993, y: 0.0096, gen: '2G' },
+        { x: 2001, y: 0.384, gen: '3G' },
+        { x: 2010, y: 37.5, gen: '4G' },
+        { x: 2020, y: 400, gen: '5G' }
+      ],
+      korea: [
+        { x: 1984, y: 0.0024, gen: '1G' },
+        { x: 1996, y: 0.0144, gen: '2G' },
+        { x: 2002, y: 0.384, gen: '3G' },
+        { x: 2011, y: 75, gen: '4G' },
+        { x: 2019, y: 500, gen: '5G' }
+      ],
+      usa: [
+        { x: 1983, y: 0.0024, gen: '1G' },
+        { x: 1991, y: 0.0096, gen: '2G' },
+        { x: 2002, y: 0.384, gen: '3G' },
+        { x: 2010, y: 50, gen: '4G' },
+        { x: 2019, y: 350, gen: '5G' }
+      ],
+      europe: [
+        { x: 1981, y: 0.0024, gen: '1G' },
+        { x: 1991, y: 0.0144, gen: '2G' },
+        { x: 2003, y: 0.384, gen: '3G' },
+        { x: 2009, y: 50, gen: '4G' },
+        { x: 2019, y: 200, gen: '5G' }
+      ],
+      china: [
+        { x: 1987, y: 0.0024, gen: '1G' },
+        { x: 1995, y: 0.0096, gen: '2G' },
+        { x: 2009, y: 2.8, gen: '3G' },
+        { x: 2013, y: 100, gen: '4G' },
+        { x: 2019, y: 300, gen: '5G' }
+      ]
+    };
+
+    // Chart 1: Multi-country Evolution
+    const evoCtx = document.getElementById('evolutionChart').getContext('2d');
+    
+    new Chart(evoCtx, {
+      type: 'line',
+      data: {
+        datasets: [
+          {
+            label: 'Japan 🇯🇵',
+            data: evolutionData.japan,
+            borderColor: colors.japan,
+            backgroundColor: colors.japan + '20',
+            tension: 0.3,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointBackgroundColor: colors.japan,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            borderWidth: 3,
+            fill: false
+          },
+          {
+            label: 'South Korea 🇰🇷',
+            data: evolutionData.korea,
+            borderColor: colors.korea,
+            backgroundColor: colors.korea + '20',
+            tension: 0.3,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointBackgroundColor: colors.korea,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            borderWidth: 3,
+            fill: false
+          },
+          {
+            label: 'USA 🇺🇸',
+            data: evolutionData.usa,
+            borderColor: colors.usa,
+            backgroundColor: colors.usa + '20',
+            tension: 0.3,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointBackgroundColor: colors.usa,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            borderWidth: 3,
+            fill: false
+          },
+          {
+            label: 'Europe 🇪🇺',
+            data: evolutionData.europe,
+            borderColor: colors.europe,
+            backgroundColor: colors.europe + '20',
+            tension: 0.3,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointBackgroundColor: colors.europe,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            borderWidth: 3,
+            fill: false
+          },
+          {
+            label: 'China 🇨🇳',
+            data: evolutionData.china,
+            borderColor: colors.china,
+            backgroundColor: colors.china + '20',
+            tension: 0.3,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointBackgroundColor: colors.china,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            borderWidth: 3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'nearest',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              font: { size: 12, weight: '600' },
+              padding: 16,
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: '#1a1a2e',
+            padding: 14,
+            cornerRadius: 8,
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 13 },
+            callbacks: {
+              title: ctx => ctx[0].raw.gen + ' Launch',
+              label: ctx => {
+                const val = ctx.raw.y;
+                const speed = val >= 1 ? val.toFixed(0) + ' Mbps' : (val * 1000).toFixed(1) + ' kbps';
+                return ctx.dataset.label + ': ' + ctx.raw.x + ' (' + speed + ')';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            type: 'logarithmic',
+            min: 0.001,
+            max: 1000,
+            title: { 
+              display: true, 
+              text: 'PEAK SPEED (LOG SCALE)', 
+              font: { size: 11, weight: '600' }, 
+              color: '#666' 
+            },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: {
+              font: { size: 11 },
+              callback: v => {
+                if (v >= 1) return v + ' Mbps';
+                if (v >= 0.001) return (v * 1000) + ' kbps';
+                return '';
+              }
+            }
+          },
+          x: {
+            type: 'linear',
+            min: 1978,
+            max: 2025,
+            title: { 
+              display: true, 
+              text: 'YEAR', 
+              font: { size: 11, weight: '600' }, 
+              color: '#666' 
+            },
+            grid: { color: 'rgba(0,0,0,0.04)' },
+            ticks: { 
+              font: { size: 11 },
+              stepSize: 5
+            }
+          }
+        }
+      }
+    });
+
+    // Chart 2: 5G Speeds by Country (Horizontal Bar)
     new Chart(document.getElementById('countryChart'), {
       type: 'bar',
       data: {
-        labels: ['UAE 🇦🇪', 'South Korea 🇰🇷', 'Malaysia 🇲🇾', 'Qatar 🇶🇦', 'Brazil 🇧🇷', 'USA 🇺🇸', 'Singapore 🇸🇬', 'India 🇮🇳', 'UK 🇬🇧', 'Germany 🇩🇪', 'Global Median'],
+        labels: ['UAE 🇦🇪', 'South Korea 🇰🇷', 'Malaysia 🇲🇾', 'Qatar 🇶🇦', 'Brazil 🇧🇷', 'USA 🇺🇸', 'Singapore 🇸🇬', 'India 🇮🇳', 'China 🇨🇳', 'UK 🇬🇧', 'Germany 🇩🇪', 'Global Median'],
         datasets: [{
           label: 'Median 5G Download Speed (Mbps)',
-          data: [592, 508, 485, 466, 444, 388, 352, 312, 186, 152, 203],
+          data: [592, 508, 485, 466, 444, 388, 352, 312, 300, 186, 152, 203],
           backgroundColor: [
-            colors.blue, colors.blue, colors.blue, colors.blue, colors.blue,
-            colors.green, colors.green, colors.green,
-            colors.orange, colors.orange,
-            colors.red
+            colors.korea, colors.korea, colors.korea, colors.korea, colors.korea,
+            colors.usa, colors.usa, colors.usa, colors.china,
+            colors.europe, colors.europe,
+            '#888'
           ],
           borderRadius: 6,
           borderSkipped: false
@@ -357,72 +574,14 @@
       }
     });
 
-    // Chart 2: Evolution (Log Scale Line)
-    const evolutionCtx = document.getElementById('evolutionChart').getContext('2d');
-    const gradient = evolutionCtx.createLinearGradient(0, 0, 0, 350);
-    gradient.addColorStop(0, 'rgba(67, 99, 216, 0.3)');
-    gradient.addColorStop(1, 'rgba(230, 25, 75, 0.05)');
-
-    new Chart(evolutionCtx, {
-      type: 'line',
-      data: {
-        labels: ['1983', '1991', '1998', '2001', '2009', '2019', '2024'],
-        datasets: [{
-          label: 'Peak Speed (Mbps)',
-          data: [0.0024, 0.014, 0.064, 2, 50, 500, 1000],
-          borderColor: colors.blue,
-          backgroundColor: gradient,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 8,
-          pointBackgroundColor: [colors.red, colors.orange, colors.orange, colors.yellow, colors.green, colors.blue, colors.blue],
-          pointBorderColor: '#fff',
-          pointBorderWidth: 3,
-          borderWidth: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => {
-                const val = ctx.raw;
-                if (val >= 1) return val + ' Mbps';
-                return (val * 1000).toFixed(1) + ' kbps';
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            type: 'logarithmic',
-            min: 0.001,
-            max: 2000,
-            title: { display: true, text: 'SPEED (LOG SCALE)', font: { size: 11, weight: '600' }, color: '#666' },
-            grid: { color: 'rgba(0,0,0,0.06)' },
-            ticks: {
-              callback: v => v >= 1 ? v + ' Mbps' : (v * 1000) + ' kbps'
-            }
-          },
-          x: {
-            title: { display: true, text: 'YEAR', font: { size: 11, weight: '600' }, color: '#666' },
-            grid: { display: false }
-          }
-        }
-      }
-    });
-
     // Chart 3: 5G Adoption by Region
     new Chart(document.getElementById('adoptionChart'), {
       type: 'doughnut',
       data: {
-        labels: ['North America', 'Asia Pacific', 'Europe', 'Latin America', 'Middle East', 'Africa'],
+        labels: ['North America', 'Asia Pacific', 'Europe', 'Middle East', 'Latin America', 'Africa'],
         datasets: [{
-          data: [43, 35, 28, 15, 25, 5],
-          backgroundColor: [colors.blue, colors.green, colors.purple, colors.orange, colors.cyan, colors.red],
+          data: [43, 35, 28, 25, 15, 5],
+          backgroundColor: [colors.usa, colors.japan, colors.europe, colors.uae, colors.china, '#888'],
           borderWidth: 0,
           spacing: 4,
           borderRadius: 6
@@ -446,15 +605,15 @@
       }
     });
 
-    // Chart 4: Regional YoY Improvement
+    // Chart 4: YoY Improvement
     new Chart(document.getElementById('regionChart'), {
       type: 'bar',
       data: {
-        labels: ['Brazil', 'India', 'UAE', 'Malaysia', 'South Korea', 'USA', 'Global'],
+        labels: ['India 🇮🇳', 'Brazil 🇧🇷', 'Malaysia 🇲🇾', 'USA 🇺🇸', 'Global', 'UAE 🇦🇪', 'S. Korea 🇰🇷'],
         datasets: [{
           label: 'Speed Increase 2022→2023',
-          data: [42, 72, 16, 38, 5, 27, 20],
-          backgroundColor: colors.green,
+          data: [72, 42, 38, 27, 20, 16, 5],
+          backgroundColor: [colors.japan, colors.usa, colors.korea, colors.usa, '#888', colors.uae, colors.korea],
           borderRadius: 6
         }]
       },
