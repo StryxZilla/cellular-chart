@@ -2,207 +2,394 @@
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Network Speeds by Country | 2023-2024</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
-      background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);
-      padding: 40px;
-      min-height: 100vh;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      line-height: 1.6;
     }
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      overflow: hidden;
     }
     .header {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      background: linear-gradient(135deg, #0f1419 0%, #1a252f 100%);
       color: white;
-      padding: 32px 40px;
+      padding: 48px 48px 40px;
     }
     .kicker {
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       color: #ffd166;
-      margin-bottom: 8px;
-    }
-    h1 {
-      font-size: 36px;
-      font-weight: 900;
-      line-height: 1.1;
       margin-bottom: 12px;
     }
+    h1 {
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
     .subtitle {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 400;
-      opacity: 0.85;
+      opacity: 0.9;
+      max-width: 600px;
+    }
+    .byline {
+      margin-top: 24px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+    .section {
+      padding: 40px 48px;
+      border-bottom: 1px solid #eee;
+    }
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #1a1a1a;
+    }
+    .section-desc {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 24px;
+      max-width: 700px;
     }
     .chart-container {
-      padding: 30px 40px;
+      position: relative;
+      height: 450px;
+      margin: 20px 0;
     }
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      padding: 0 40px 24px;
+    .chart-container-tall {
+      height: 500px;
     }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
+    .callout {
+      background: linear-gradient(135deg, #fff7e6 0%, #fff3d6 100%);
+      border-left: 4px solid #ffd166;
+      padding: 20px 24px;
+      margin: 24px 0;
+      border-radius: 0 8px 8px 0;
     }
-    .legend-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
+    .callout-stat {
+      font-size: 36px;
+      font-weight: 900;
+      color: #b8860b;
     }
-    .annotations {
+    .callout-text {
+      font-size: 15px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .grid-2 {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
-      padding: 24px 40px;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 24px 0;
+    }
+    .stat-card {
       background: #f8f9fa;
-      border-top: 1px solid #eee;
-    }
-    .anno {
+      padding: 24px;
+      border-radius: 12px;
       text-align: center;
-      padding: 16px 8px;
-      background: white;
-      border-radius: 8px;
-      border-left: 4px solid;
     }
-    .anno-gen { font-size: 20px; font-weight: 800; }
-    .anno-year { font-size: 11px; color: #666; margin: 4px 0; }
-    .anno-cap { font-size: 12px; font-weight: 500; }
-    .anno-speed { font-size: 10px; color: #888; margin-top: 4px; }
-    .footer {
-      padding: 20px 40px;
-      font-size: 11px;
+    .stat-num {
+      font-size: 32px;
+      font-weight: 900;
+      color: #4363d8;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .timeline {
+      display: flex;
+      justify-content: space-between;
+      margin: 32px 0;
+      padding: 0 20px;
+    }
+    .timeline-item {
+      text-align: center;
+      flex: 1;
+    }
+    .timeline-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+    }
+    .timeline-gen {
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .timeline-year {
+      font-size: 12px;
       color: #888;
-      border-top: 1px solid #eee;
+    }
+    .timeline-speed {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .sources {
+      background: #f8f9fa;
+      padding: 32px 48px;
+      font-size: 13px;
+      color: #666;
+    }
+    .sources h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    .sources ul {
+      list-style: none;
+      columns: 2;
+      column-gap: 40px;
+    }
+    .sources li {
+      margin-bottom: 8px;
+      break-inside: avoid;
+    }
+    .sources a {
+      color: #4363d8;
+      text-decoration: none;
+    }
+    .sources a:hover {
+      text-decoration: underline;
+    }
+    .footer {
+      padding: 24px 48px;
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      .header, .section, .sources { padding-left: 24px; padding-right: 24px; }
+      h1 { font-size: 28px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .sources ul { columns: 1; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="kicker">📱 Technology</div>
-      <h1>The Mobile Revolution</h1>
-      <div class="subtitle">How cellular speeds went from voice calls to virtual reality in 40 years</div>
-    </div>
-    
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#e6194b"></div>1G Era</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#f58231"></div>2G Era</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#ffe119"></div>3G Era</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#3cb44b"></div>4G LTE</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#4363d8"></div>5G Era</div>
+      <div class="kicker">📱 Global Connectivity</div>
+      <h1>The 5G Speed Gap</h1>
+      <div class="subtitle">How mobile network performance varies wildly across the world — and which countries are leading the race</div>
+      <div class="byline">Data: Q3 2023 – Q4 2024 | Updated February 2026</div>
     </div>
 
-    <div class="chart-container">
-      <canvas id="chart"></canvas>
+    <div class="section">
+      <div class="section-title">5G Download Speeds by Country</div>
+      <div class="section-desc">Median 5G download speeds vary by more than 3x between leading and lagging nations. The UAE leads with nearly 600 Mbps, while the global median sits at just 203 Mbps.</div>
+      <div class="chart-container chart-container-tall">
+        <canvas id="countryChart"></canvas>
+      </div>
+      <div class="callout">
+        <div class="callout-stat">592 Mbps</div>
+        <div class="callout-text">UAE's median 5G speed — 2.9x faster than the global average</div>
+      </div>
     </div>
 
-    <div class="annotations">
-      <div class="anno" style="border-color:#e6194b">
-        <div class="anno-gen" style="color:#e6194b">1G</div>
-        <div class="anno-year">1983</div>
-        <div class="anno-cap">Voice Only</div>
-        <div class="anno-speed">2.4 kbps</div>
+    <div class="section">
+      <div class="section-title">The Evolution: 1G to 5G</div>
+      <div class="section-desc">From analog voice calls to gigabit mobile broadband — 40 years of exponential improvement.</div>
+      
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#e6194b"></div>
+          <div class="timeline-gen" style="color:#e6194b">1G</div>
+          <div class="timeline-year">1983</div>
+          <div class="timeline-speed">2.4 kbps</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#f58231"></div>
+          <div class="timeline-gen" style="color:#f58231">2G</div>
+          <div class="timeline-year">1991</div>
+          <div class="timeline-speed">14-64 kbps</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#ffe119"></div>
+          <div class="timeline-gen" style="color:#b8860b">3G</div>
+          <div class="timeline-year">2001</div>
+          <div class="timeline-speed">0.4-2 Mbps</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#3cb44b"></div>
+          <div class="timeline-gen" style="color:#3cb44b">4G</div>
+          <div class="timeline-year">2009</div>
+          <div class="timeline-speed">10-50 Mbps</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background:#4363d8"></div>
+          <div class="timeline-gen" style="color:#4363d8">5G</div>
+          <div class="timeline-year">2019</div>
+          <div class="timeline-speed">100-1000 Mbps</div>
+        </div>
       </div>
-      <div class="anno" style="border-color:#f58231">
-        <div class="anno-gen" style="color:#f58231">2G</div>
-        <div class="anno-year">1991</div>
-        <div class="anno-cap">SMS & Basic Data</div>
-        <div class="anno-speed">14-64 kbps</div>
+
+      <div class="chart-container">
+        <canvas id="evolutionChart"></canvas>
       </div>
-      <div class="anno" style="border-color:#ffe119">
-        <div class="anno-gen" style="color:#b8860b">3G</div>
-        <div class="anno-year">2001</div>
-        <div class="anno-cap">Mobile Web & Apps</div>
-        <div class="anno-speed">0.4-2 Mbps</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5G Adoption Race</div>
+      <div class="section-desc">Percentage of mobile connections using 5G technology by country (2024).</div>
+      
+      <div class="grid-2">
+        <div class="stat-card">
+          <div class="stat-num">43%</div>
+          <div class="stat-label">US 5G adoption (2022)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1.4B</div>
+          <div class="stat-label">Global 5G connections</div>
+        </div>
       </div>
-      <div class="anno" style="border-color:#3cb44b">
-        <div class="anno-gen" style="color:#3cb44b">4G</div>
-        <div class="anno-year">2009</div>
-        <div class="anno-cap">HD Streaming</div>
-        <div class="anno-speed">10-50 Mbps</div>
+
+      <div class="chart-container">
+        <canvas id="adoptionChart"></canvas>
       </div>
-      <div class="anno" style="border-color:#4363d8">
-        <div class="anno-gen" style="color:#4363d8">5G</div>
-        <div class="anno-year">2019</div>
-        <div class="anno-cap">IoT, AR/VR, AI</div>
-        <div class="anno-speed">100-1000 Mbps</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Regional Performance Gap</div>
+      <div class="section-desc">5G speed improvements year-over-year show which regions are investing in network infrastructure.</div>
+      <div class="chart-container">
+        <canvas id="regionChart"></canvas>
       </div>
+    </div>
+
+    <div class="sources">
+      <h3>Data Sources</h3>
+      <ul>
+        <li><a href="https://www.ookla.com/articles/worldwide-connectivity-mobile-fixed-networks-digital-divide-2023" target="_blank">Ookla Speedtest Intelligence, Q3 2023</a></li>
+        <li><a href="https://www.gsma.com/mobileeconomy/" target="_blank">GSMA Intelligence, Mobile Economy Report 2023</a></li>
+        <li><a href="https://www.statista.com/statistics/1168435/average-5g-download-speed-in-selected-countries/" target="_blank">Statista, 5G Download Speeds by Country 2023</a></li>
+        <li><a href="https://www.itu.int/en/ITU-D/Statistics/Pages/stat/default.aspx" target="_blank">ITU World Telecommunication Indicators</a></li>
+        <li><a href="https://gsacom.com/" target="_blank">Global mobile Suppliers Association (GSA)</a></li>
+        <li><a href="https://www.broadbandsearch.net/blog/mobile-broadband-statistics" target="_blank">BroadbandSearch, Mobile Broadband Statistics</a></li>
+        <li><a href="https://sqmagazine.co.uk/5g-statistics/" target="_blank">SQ Magazine, 5G Statistics 2025</a></li>
+        <li><a href="https://www.spglobal.com/marketintelligence/" target="_blank">S&P Global Market Intelligence</a></li>
+      </ul>
     </div>
 
     <div class="footer">
-      Data represents peak theoretical speeds. Actual speeds vary by carrier, location, and device. Sources: ITU, GSMA, IEEE.
+      Methodology: Speeds represent median download speeds from Speedtest by Ookla. Actual speeds vary by location, time of day, device, and carrier. 
+      Peak theoretical speeds (e.g., 20 Gbps for 5G) are rarely achieved in real-world conditions.
     </div>
   </div>
 
   <script>
-    const ctx = document.getElementById('chart').getContext('2d');
-    
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(67, 99, 216, 0.4)');
-    gradient.addColorStop(0.5, 'rgba(60, 180, 75, 0.2)');
-    gradient.addColorStop(1, 'rgba(230, 25, 75, 0.05)');
+    // Color palette
+    const colors = {
+      red: '#e6194b',
+      orange: '#f58231', 
+      yellow: '#ffe119',
+      green: '#3cb44b',
+      blue: '#4363d8',
+      purple: '#911eb4',
+      cyan: '#42d4f4',
+      magenta: '#f032e6'
+    };
 
-    new Chart(ctx, {
-      type: 'line',
+    // Chart 1: 5G Speeds by Country (Horizontal Bar)
+    new Chart(document.getElementById('countryChart'), {
+      type: 'bar',
       data: {
-        labels: ['1983', '1991', '1998', '2001', '2006', '2009', '2012', '2019', '2023'],
+        labels: ['UAE 🇦🇪', 'South Korea 🇰🇷', 'Malaysia 🇲🇾', 'Qatar 🇶🇦', 'Brazil 🇧🇷', 'USA 🇺🇸', 'Singapore 🇸🇬', 'India 🇮🇳', 'UK 🇬🇧', 'Germany 🇩🇪', 'Global Median'],
         datasets: [{
-          label: 'Peak Speed (Mbps)',
-          data: [0.0024, 0.014, 0.064, 0.384, 2, 10, 50, 100, 1000],
-          borderColor: function(context) {
-            const chart = context.chart;
-            const {ctx, chartArea} = chart;
-            if (!chartArea) return '#4363d8';
-            const gradient = ctx.createLinearGradient(0, 0, chartArea.width, 0);
-            gradient.addColorStop(0, '#e6194b');
-            gradient.addColorStop(0.25, '#f58231');
-            gradient.addColorStop(0.4, '#ffe119');
-            gradient.addColorStop(0.6, '#3cb44b');
-            gradient.addColorStop(1, '#4363d8');
-            return gradient;
-          },
-          backgroundColor: gradient,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 10,
-          pointHoverRadius: 14,
-          pointBackgroundColor: ['#e6194b', '#f58231', '#f58231', '#ffe119', '#ffe119', '#3cb44b', '#3cb44b', '#4363d8', '#4363d8'],
-          pointBorderColor: '#fff',
-          pointBorderWidth: 3,
-          borderWidth: 5
+          label: 'Median 5G Download Speed (Mbps)',
+          data: [592, 508, 485, 466, 444, 388, 352, 312, 186, 152, 203],
+          backgroundColor: [
+            colors.blue, colors.blue, colors.blue, colors.blue, colors.blue,
+            colors.green, colors.green, colors.green,
+            colors.orange, colors.orange,
+            colors.red
+          ],
+          borderRadius: 6,
+          borderSkipped: false
         }]
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {
             backgroundColor: '#1a1a2e',
-            titleFont: { size: 14, weight: 'bold' },
-            bodyFont: { size: 13 },
             padding: 12,
             cornerRadius: 8,
             callbacks: {
-              label: function(context) {
-                const val = context.raw;
+              label: ctx => ctx.raw + ' Mbps'
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: { display: true, text: 'MEDIAN DOWNLOAD SPEED (Mbps)', font: { size: 11, weight: '600' }, color: '#666' },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            max: 650
+          },
+          y: {
+            grid: { display: false },
+            ticks: { font: { size: 13, weight: '600' } }
+          }
+        }
+      }
+    });
+
+    // Chart 2: Evolution (Log Scale Line)
+    const evolutionCtx = document.getElementById('evolutionChart').getContext('2d');
+    const gradient = evolutionCtx.createLinearGradient(0, 0, 0, 350);
+    gradient.addColorStop(0, 'rgba(67, 99, 216, 0.3)');
+    gradient.addColorStop(1, 'rgba(230, 25, 75, 0.05)');
+
+    new Chart(evolutionCtx, {
+      type: 'line',
+      data: {
+        labels: ['1983', '1991', '1998', '2001', '2009', '2019', '2024'],
+        datasets: [{
+          label: 'Peak Speed (Mbps)',
+          data: [0.0024, 0.014, 0.064, 2, 50, 500, 1000],
+          borderColor: colors.blue,
+          backgroundColor: gradient,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 8,
+          pointBackgroundColor: [colors.red, colors.orange, colors.orange, colors.yellow, colors.green, colors.blue, colors.blue],
+          pointBorderColor: '#fff',
+          pointBorderWidth: 3,
+          borderWidth: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const val = ctx.raw;
                 if (val >= 1) return val + ' Mbps';
                 return (val * 1000).toFixed(1) + ' kbps';
               }
@@ -214,32 +401,83 @@
             type: 'logarithmic',
             min: 0.001,
             max: 2000,
-            title: {
-              display: true,
-              text: 'DOWNLOAD SPEED (LOG SCALE)',
-              font: { size: 11, weight: '600' },
-              color: '#666'
-            },
+            title: { display: true, text: 'SPEED (LOG SCALE)', font: { size: 11, weight: '600' }, color: '#666' },
             grid: { color: 'rgba(0,0,0,0.06)' },
             ticks: {
-              font: { size: 11 },
-              color: '#666',
-              callback: function(v) {
-                if (v >= 1) return v + ' Mbps';
-                if (v >= 0.001) return (v * 1000) + ' kbps';
-                return '';
-              }
+              callback: v => v >= 1 ? v + ' Mbps' : (v * 1000) + ' kbps'
             }
           },
           x: {
-            title: {
-              display: true,
-              text: 'YEAR',
-              font: { size: 11, weight: '600' },
-              color: '#666'
-            },
+            title: { display: true, text: 'YEAR', font: { size: 11, weight: '600' }, color: '#666' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Chart 3: 5G Adoption by Region
+    new Chart(document.getElementById('adoptionChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['North America', 'Asia Pacific', 'Europe', 'Latin America', 'Middle East', 'Africa'],
+        datasets: [{
+          data: [43, 35, 28, 15, 25, 5],
+          backgroundColor: [colors.blue, colors.green, colors.purple, colors.orange, colors.cyan, colors.red],
+          borderWidth: 0,
+          spacing: 4,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: { 
+            position: 'right',
+            labels: { font: { size: 12, weight: '500' }, padding: 16 }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.label + ': ' + ctx.raw + '% 5G adoption'
+            }
+          }
+        }
+      }
+    });
+
+    // Chart 4: Regional YoY Improvement
+    new Chart(document.getElementById('regionChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Brazil', 'India', 'UAE', 'Malaysia', 'South Korea', 'USA', 'Global'],
+        datasets: [{
+          label: 'Speed Increase 2022→2023',
+          data: [42, 72, 16, 38, 5, 27, 20],
+          backgroundColor: colors.green,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => '+' + ctx.raw + '% YoY improvement'
+            }
+          }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: 'YEAR-OVER-YEAR IMPROVEMENT (%)', font: { size: 11, weight: '600' }, color: '#666' },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            max: 80
+          },
+          x: {
             grid: { display: false },
-            ticks: { font: { size: 12, weight: '600' }, color: '#333' }
+            ticks: { font: { size: 12, weight: '600' } }
           }
         }
       }
